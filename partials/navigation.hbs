@@ -1,13 +1,36 @@
 <div class="nav">
-    <h3 class="nav-title">Menu</h3>
-    <a href="#" class="nav-close">
-        <span class="hidden">Close</span>
-    </a>
     <ul>
-        {{#foreach navigation}}
-            <li class="nav-{{slug}}{{#if current}} nav-current{{/if}}" role="presentation"><a href="{{url absolute="true"}}">{{label}}</a></li>
-        {{/foreach}}
+        <li class="nav-item">
+            <a href="/music" class="clearfix">
+                <div class="nav-circle">
+                    <i class="icon ion-ios-musical-notes"></i>
+                </div>
+                <span>Music</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/resume" class="clearfix">
+                <div class="nav-circle" style="background-color: #363653">
+                    <i class="icon ion-ios-paper"></i>
+                </div>
+                <span>Résumé</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/contact" class="clearfix">
+                <div class="nav-circle" style="background-color: #C8977C">
+                    <i class="icon ion-ios-email"></i>
+                </div>
+                <span>Contact</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/" class="clearfix">
+                <div class="nav-circle" style="background-color: #009CFF">
+                    <i class="icon ion-ios-home"></i>
+                </div>
+                <span>Home</span>
+            </a>
+        </li>
     </ul>
-    <a class="subscribe-button icon-feed" href="{{@blog.url}}/rss/">Subscribe</a>
 </div>
-<span class="nav-cover"></span>

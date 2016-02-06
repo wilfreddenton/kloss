@@ -153,6 +153,16 @@ td, th{ padding: 0; }
 }
 @font-face {
   font-family: 'Aleo';
+  src: url('../fonts/aleo-light.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/aleo-light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/aleo-light.woff') format('woff'), /* Modern Browsers */
+       url('../fonts/aleo-light.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('../fonts/aleo-light.svg#0a615970e4ace30c6194a1d048e4285f') format('svg'); /* Legacy iOS */
+  font-style:   normal;
+  font-weight:  300;
+}
+@font-face {
+  font-family: 'Aleo';
   src: url('../fonts/aleo-light-italic.eot'); /* IE9 Compat Modes */
   src: url('../fonts/aleo-light-italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
        url('../fonts/aleo-light-italic.woff') format('woff'), /* Modern Browsers */
@@ -655,6 +665,7 @@ body.nav-opened .site-wrapper {
     line-height: 1.5em;
     font-weight: 300;
     font-family: "Aleo", serif;
+    font-style: italic;
     letter-spacing: 0.01rem;
     color: rgba(0,0,0,0.5);
 }
@@ -683,8 +694,12 @@ body:not(.post-template) .post-title {
 }
 
 .post-title a {
+  transition: 0.2s ease;
     color: #363653;
     text-decoration: none;
+}
+.post-title a:hover {
+  color: #A9A0D2;
 }
 
 .post-excerpt p {
@@ -693,9 +708,23 @@ body:not(.post-template) .post-title {
     line-height: 1.7em;
 }
 
-p .read-more {
-  margin-left: 15px;
-  top: 4px;
+.post-excerpt img {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+  padding: 0.6em 0;
+  margin-bottom: 10px;
+  max-width: 126%;
+  left: 50%;
+  -moz-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+.read-more {
+  float: right;
+  top: 12px;
   position: relative;
     font-size: 24px;
 }
@@ -836,6 +865,7 @@ p .read-more {
        Works for images that are larger than their containers. */
     position: relative;
     left: 50%;
+    -moz-transform: translateX(-50%);
     -webkit-transform: translateX(-50%); /* for Safari and iOS */
     -ms-transform: translateX(-50%); /* for IE9 */
     transform: translateX(-50%);
@@ -1298,10 +1328,16 @@ p .read-more {
   cursor: pointer;
 }
 #action-button:hover {
+  -moz-transform: translateY(-2px);
+  -webkit-transform: translateY(-2px);
+  -ms-transform: translateY(-2px);
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 #action-button:active {
+  -moz-transform: translateY(-2px);
+  -webkit-transform: translateY(-2px);
+  -ms-transform: translateY(-2px);
   transform: translateY(0px);
   box-shadow: 0 1px 1px rgba(0,0,0,0.5);
 }
@@ -1319,17 +1355,85 @@ p .read-more {
 #ink {
   position: fixed;
   border-radius: 100%;
-  background-color: rgba(152, 139, 202, 0.66);
+  background-color: rgba(152, 139, 202, 0.7);
   opacity: 0;
   transform: scale(0);
+  -moz-transform: scale(0);
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
   z-index: 99;
   transition: 1.2s ease;
 }
 #ink.animate-ripple {
   opacity: 1;
   transform: scale(3);
+  -moz-transform: scale(3);
+  -webkit-transform: scale(3);
+  -ms-transform: scale(3);
 }
 
+.nav {
+  z-index: 100;
+  position: fixed;
+  bottom: 54px;
+  right: 25px;
+  font-size: 1.3rem;
+}
+.nav ul {
+  font-family: "Aleo", serif;
+  list-style-type: none;
+}
+.nav ul li {
+  position: relative;
+  opacity: 0;
+  z-index: -1;
+  transition: 0.3s ease;
+}
+.nav ul li.show {
+  z-index: 100;
+  opacity: 1;
+}
+.nav ul li a {
+  color: #fff;
+  display: block;
+}
+
+.nav ul li a span {
+  position: relative;
+  margin-top: 8px;
+  display: block;
+  text-align: center;
+  line-height: 1.4;
+  border-radius: 2px;
+  padding: 3px 5px;
+  float: right;
+  background-color: #A9A0D2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.nav ul li a .nav-circle {
+  margin-right: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 20px;
+  font-size: 24px;
+  display: block;
+  margin-left: 15px;
+  padding-top: 4px;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  background-color: #A9A0D2; 
+  float: right;
+  transition: 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.nav ul li a:hover .nav-circle {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+.nav ul li a:hover span {
+  text-decoration: underline;
+}
 .site-footer {
     position: relative;
     margin: 8rem 0 0 0;
@@ -1553,54 +1657,6 @@ p .read-more {
         height: 30px;
     }
 
-    .menu-button {
-        padding: 0 5px;
-        border-radius: 0;
-        border-width: 0;
-        color: #2e2e2e;
-        background: transparent;
-    }
-    .menu-button:hover {
-        color: #2e2e2e;
-        border-color: transparent;
-        background: none;
-    }
-    body.nav-opened .menu-button {
-        background: none;
-        border: transparent;
-    }
-
-    .main-nav.overlay a:hover {
-        color: #fff;
-        border-color: transparent;
-        background: transparent;
-    }
-
-    .no-cover .main-nav.overlay {
-        background: none;
-    }
-    .no-cover .main-nav.overlay .menu-button {
-        border: none;
-    }
-
-    .main-nav.overlay .menu-button {
-        border-color: transparent;
-    }
-
-    .nav-title {
-        top: 25px;
-
-    }
-
-    .nav-close {
-        position: absolute;
-        top: 18px;
-    }
-
-    .nav ul {
-        padding: 60px 9% 5%;
-    }
-
     .inner,
     .pagination {
         width: auto;
@@ -1615,6 +1671,10 @@ p .read-more {
         margin-right: 16px;
         padding-bottom: 2rem;
         line-height: 1.65em;
+    }
+
+    .read-more {
+      top: 7px;
     }
 
     .post-date {
@@ -1787,61 +1847,6 @@ p .read-more {
    ========================================================================== */
 
 /* Used to fade in title/desc on the home page */
-@-webkit-keyframes fade-in-down {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(-10px);
-        transform: translateY(-10px);
-    }
-    100% {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-    }
-}
-@keyframes fade-in-down {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(-10px);
-        transform: translateY(-10px);
-    }
-    100% {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-    }
-}
-
-/* Used to bounce .scroll-down on home page */
-@-webkit-keyframes bounce {
-    0%, 10%, 25%, 40%, 50% {
-        -webkit-transform: translateY(0) rotate(-90deg);
-                transform: translateY(0) rotate(-90deg);
-    }
-    20% {
-        -webkit-transform: translateY(-10px) rotate(-90deg);
-                transform: translateY(-10px) rotate(-90deg);
-    }
-    30% {
-        -webkit-transform: translateY(-5px) rotate(-90deg);
-                transform: translateY(-5px) rotate(-90deg);
-    }
-}
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        -webkit-transform: translateY(0) rotate(-90deg);
-                transform: translateY(0) rotate(-90deg);
-    }
-    40% {
-        -webkit-transform: translateY(-10px) rotate(-90deg);
-                transform: translateY(-10px) rotate(-90deg);
-    }
-    60% {
-        -webkit-transform: translateY(-5px) rotate(-90deg);
-                transform: translateY(-5px) rotate(-90deg);
-    }
-}
-
 
 /* ==========================================================================
    End of file. Animations should be the last thing here. Do not add stuff
