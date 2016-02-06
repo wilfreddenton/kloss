@@ -31,7 +31,7 @@
     var right = (-(d / 2) + ele.offsetWidth / 2 + 25).toString() + 'px';
     var bottom = (-(d / 2) + ele.offsetHeight / 2 + 15).toString() + 'px';
     ink.classList.remove('animate-ripple');
-    setTimeout(() => {
+    setTimeout(function() {
       d = d.toString() + 'px';
       ink.style.width = d;
       ink.style.height = d;
