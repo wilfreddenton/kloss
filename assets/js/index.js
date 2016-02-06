@@ -14,7 +14,17 @@
 
 // how about some real Javascript Ghost?
 (function() {
-  var clickHandler = function(e) {
+  var opened = false;
+  var hideNav = function(e) {
+    if (!opened) return;
+    console.log('hey');
+    opened = false;
+    var ink = document.getElementById('ink');
+    ink.classList.remove('animate-ripple');
+  }
+  var showNav = function(e) {
+    if (opened) return;
+    opened = true;
     var ele = document.getElementById('action-button');
     var ink = document.getElementById('ink');
     var d = Math.max(window.innerWidth, window.innerHeight);
@@ -30,6 +40,8 @@
       ink.classList.add('animate-ripple');
     }, 23);
   }
-  var ab = document.getElementById('action-button');
-  ab.addEventListener('click', clickHandler);
+  var ab = document.getElementById('action-button').childNodes[1];
+  ab.addEventListener('click', showNav);
+  ab.addEventListener('mouseover', showNav);
+  ink.addEventListener('click', hideNav);
 })();
