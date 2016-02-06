@@ -598,6 +598,7 @@ body.nav-opened .site-wrapper {
 #split {
   position: relative;
   margin: 0 auto;
+  padding-bottom: 15px;
   max-width: 600px;
 }
 #split:after {
@@ -1282,14 +1283,68 @@ p .read-more {
    10. Footer - The bottom of every page
    ========================================================================== */
 
+#action-button {
+  width: 56px;
+  height: 56px;
+  position: fixed;
+  bottom: 15px;
+  right: 25px;
+  z-index: 100;
+  background-color: #A9A0D2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  transition: 0.2s ease;
+  border-radius: 28px;
+  text-align: center;
+  cursor: pointer;
+}
+#action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5)
+}
+#action-button:active {
+  transform: translateY(0px);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.5);
+}
+#action-button i {
+  position: relative;
+  top: 12px;
+  color: white;
+  font-size: 22px;
+}
+#ink {
+  position: fixed;
+  border-radius: 100%;
+  background-color: rgba(152, 139, 202, 0.66);
+  opacity: 0;
+  transform: scale(0);
+  z-index: 99;
+  transition: 1.2s ease;
+}
+#ink.animate-ripple {
+  opacity: 1;
+  transform: scale(3);
+}
+
 .site-footer {
     position: relative;
     margin: 8rem 0 0 0;
     padding: 1rem 15px;
-    font-family: "Open Sans", sans-serif;
-    font-size: 1rem;
+    font-family: "Inconsolata", monospace;
+    font-size: 1.2rem;
     line-height: 1.75em;
-    color: #BBC7CC;
+    color: #fff;
+    background-color: #A9A0D2;
+    text-align: center;
+}
+.site-footer #made-with {
+  margin: 0;
+}
+.site-footer #made-width .icon {
+  font-size: 1.5rem;
+}
+.site-footer #made-with span {
+  font-family: "Butler", serif;
+  font-style: bold;
 }
 
 .site-footer a {
