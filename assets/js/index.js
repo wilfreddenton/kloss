@@ -20,6 +20,7 @@
     if (!opened) return;
     opened = false;
     var ink = document.getElementById('ink');
+    var nav = document.getElementById('nav');
     var navItems = document.getElementsByClassName('nav-item');
     ink.classList.remove('animate-ripple');
     Array.prototype.forEach.call(navItems, function(navItem, i) {
@@ -27,12 +28,16 @@
         navItem.classList.remove('show');
       }, 100 * i)
     });
+    setTimeout(function() {
+      nav.classList.remove('show');
+    }, 500);
   }
   var showNav = function(e) {
     if (opened) return;
     opened = true;
     var ele = document.getElementById('action-button');
     var ink = document.getElementById('ink');
+    var nav = document.getElementById('nav');
     var navItems = document.getElementsByClassName('nav-item');
     var d = Math.max(window.innerWidth, window.innerHeight);
     var right = (-(d / 2) + ele.offsetWidth / 2 + 25).toString() + 'px';
@@ -45,6 +50,7 @@
       ink.style.right = right;
       ink.style.bottom = bottom;
       ink.classList.add('animate-ripple');
+      nav.classList.add('show');
       Array.prototype.forEach.call(navItems, function(navItem, i) {
         setTimeout(function() {
           navItem.classList.add('show');

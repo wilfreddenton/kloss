@@ -1373,11 +1373,14 @@ body:not(.post-template) .post-title {
 }
 
 .nav {
-  z-index: 100;
+  z-index: -1;
   position: fixed;
   bottom: 54px;
   right: 25px;
   font-size: 1.3rem;
+}
+.nav.show {
+  z-index: 100;
 }
 .nav ul {
   font-family: "Aleo", serif;
@@ -1386,11 +1389,9 @@ body:not(.post-template) .post-title {
 .nav ul li {
   position: relative;
   opacity: 0;
-  z-index: -1;
   transition: 0.3s ease;
 }
 .nav ul li.show {
-  z-index: 100;
   opacity: 1;
 }
 .nav ul li a {
@@ -1479,6 +1480,24 @@ body:not(.post-template) .post-title {
     float: left;
 }
 
+.error-container {
+  padding-top: 100px;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  max-width: 550px;
+  margin: 0 auto;
+}
+.error-container img {
+  position: relative;
+  margin: 0 auto;
+  padding: 15px 16px;
+  width: 100%;
+  max-width: 300px;
+}
+.error-container a {
+  font-family: "Aleo", serif;
+}
 
 /* ==========================================================================
    11. Media Queries - Smaller than 900px
@@ -1839,6 +1858,9 @@ body:not(.post-template) .post-title {
         width: 100%;
     }
 
+    .error-container {
+      padding-top: 32px;
+    }
 }
 
 
