@@ -21,13 +21,13 @@
   var nav = document.getElementById('nav');
   var navItems = document.getElementsByClassName('nav-item');
   var hideNav = function(e) {
-    if (!opened) return;
+    if (!opened || $(nav).is(':hover') || $(ab).is(':hover')) return;
     opened = false;
     ink.classList.remove('animate-ripple');
     Array.prototype.forEach.call(navItems, function(navItem, i) {
       setTimeout(function() {
         navItem.classList.remove('show');
-      }, 100 * i)
+      }, 75 * i)
     });
     setTimeout(function() {
       if (!opened)
@@ -52,12 +52,14 @@
       Array.prototype.forEach.call(navItems, function(navItem, i) {
         setTimeout(function() {
           navItem.classList.add('show');
-        }, 100 * (navItems.length - i));
+        }, 75 * (navItems.length - i));
       });
     }, 23);
   }
   ab.addEventListener('click', showNav);
   ab.addEventListener('mouseover', showNav);
+  ab.addEventListener('mouseout', hideNav);
+  nav.addEventListener('mouseout', hideNav);
   ink.addEventListener('click', hideNav);
 })();
 
