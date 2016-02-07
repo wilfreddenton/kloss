@@ -16,12 +16,13 @@
 // action button
 (function() {
   var opened = false;
+  var ab = document.getElementById('action-button').childNodes[1];
+  var ink = document.getElementById('ink');
+  var nav = document.getElementById('nav');
+  var navItems = document.getElementsByClassName('nav-item');
   var hideNav = function(e) {
     if (!opened) return;
     opened = false;
-    var ink = document.getElementById('ink');
-    var nav = document.getElementById('nav');
-    var navItems = document.getElementsByClassName('nav-item');
     ink.classList.remove('animate-ripple');
     Array.prototype.forEach.call(navItems, function(navItem, i) {
       setTimeout(function() {
@@ -29,19 +30,16 @@
       }, 100 * i)
     });
     setTimeout(function() {
-      nav.classList.remove('show');
+      if (!opened)
+        nav.classList.remove('show');
     }, 500);
   }
   var showNav = function(e) {
     if (opened) return;
     opened = true;
-    var ele = document.getElementById('action-button');
-    var ink = document.getElementById('ink');
-    var nav = document.getElementById('nav');
-    var navItems = document.getElementsByClassName('nav-item');
     var d = Math.max(window.innerWidth, window.innerHeight);
-    var right = (-(d / 2) + ele.offsetWidth / 2 + 25).toString() + 'px';
-    var bottom = (-(d / 2) + ele.offsetHeight / 2 + 15).toString() + 'px';
+    var right = (-(d / 2) + ab.offsetWidth / 2 + 25).toString() + 'px';
+    var bottom = (-(d / 2) + ab.offsetHeight / 2 + 15).toString() + 'px';
     ink.classList.remove('animate-ripple');
     setTimeout(function() {
       d = d.toString() + 'px';
@@ -58,7 +56,6 @@
       });
     }, 23);
   }
-  var ab = document.getElementById('action-button').childNodes[1];
   ab.addEventListener('click', showNav);
   ab.addEventListener('mouseover', showNav);
   ink.addEventListener('click', hideNav);
