@@ -686,6 +686,16 @@ body.nav-opened .site-wrapper {
     word-wrap: break-word;
 }
 
+.post img {
+  position: relative;
+  max-width: 126%;
+  left: 50%;
+  -moz-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
 /* Add a little circle in the middle of the border-bottom on our .post
    just for the lolz and stylepoints. */
 
@@ -714,12 +724,6 @@ body:not(.post-template) .post-title {
   position: relative;
   padding: 0.6em 0;
   margin-bottom: 10px;
-  max-width: 126%;
-  left: 50%;
-  -moz-transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
 }
 
 .read-more {
@@ -863,12 +867,7 @@ body:not(.post-template) .post-title {
        center of its container and (2) shifting the entire image
        in the opposite direction by half its own width.
        Works for images that are larger than their containers. */
-    position: relative;
-    left: 50%;
-    -moz-transform: translateX(-50%);
-    -webkit-transform: translateX(-50%); /* for Safari and iOS */
-    -ms-transform: translateX(-50%); /* for IE9 */
-    transform: translateX(-50%);
+
 }
 
 .footnotes {
@@ -1375,11 +1374,12 @@ body:not(.post-template) .post-title {
 .nav {
   z-index: -1;
   position: fixed;
-  bottom: 54px;
   right: 25px;
+  bottom: -500px;
   font-size: 1.3rem;
 }
 .nav.show {
+  bottom: 54px;
   z-index: 100;
 }
 .nav ul {
@@ -1394,6 +1394,7 @@ body:not(.post-template) .post-title {
 .nav ul li.show {
   opacity: 1;
 }
+
 .nav ul li a {
   color: #fff;
   display: block;
@@ -1419,15 +1420,20 @@ body:not(.post-template) .post-title {
   border-radius: 20px;
   font-size: 24px;
   display: block;
-  margin-left: 15px;
+  margin-left: -5px;
   padding-top: 4px;
   height: 40px;
   width: 40px;
   text-align: center;
   background-color: #A9A0D2; 
+  transform: scale(0.33);
   float: right;
   transition: 0.2s ease;
   box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.nav ul li.show a .nav-circle {  
+  margin-left: 15px;
+  transform: scale(1);
 }
 .nav ul li a:hover .nav-circle {
   box-shadow: 0 2px 5px rgba(0,0,0,0.5);
@@ -1634,6 +1640,16 @@ body:not(.post-template) .post-title {
         border-left: none;
     }
 
+}
+
+@media only screen and (max-width: 662px) {
+  .post img {
+    left: 0px;
+    -moz-transform: translateX(0%);
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+  }
 }
 
 /* ==========================================================================
@@ -1863,6 +1879,18 @@ body:not(.post-template) .post-title {
     }
 }
 
+@media only screen and (max-width: 500px) {
+  #action-button {
+    right: 16px;
+  }
+  
+}
+
+@media only screen and (max-width: 420px) {
+  #made-with {
+    text-align: left;
+  }
+}
 
 /* ==========================================================================
    13. Animations

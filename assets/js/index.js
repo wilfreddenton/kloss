@@ -12,7 +12,6 @@
     });
 })(jQuery);
 
-// how about some real Javascript Ghost?
 // action button
 (function() {
   var opened = false;
@@ -74,4 +73,30 @@
         p.innerHTML += '...';
     });
   }
+})();
+
+// dealing with image widths on resize
+(function() {
+  var imgs = document.querySelectorAll('.post img');
+  var set = false;
+  var post = document.querySelector('.post');
+  var resizeHandler = function(e) {
+    if (window.innerWidth <= 662) {
+      var margin = (window.innerWidth - post.offsetWidth) / 2;
+      Array.prototype.forEach.call(imgs, function(img) {
+        img.style.width = window.innerWidth.toString() + 'px';
+        img.style.marginLeft = (-margin).toString() + 'px';
+      });
+      if (set === false)
+        set = true;
+    } else if (set === true && window.innerWidth > 662){
+      Array.prototype.forEach.call(imgs, function(img) {
+        img.style.width = '126%';
+        img.style.marginLeft = '0px';
+      });
+      set = false;
+    }
+  }
+  resizeHandler();
+  window.addEventListener('resize', resizeHandler);
 })();
