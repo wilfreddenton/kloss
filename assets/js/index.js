@@ -1,17 +1,3 @@
-/**
- * Main JS file for Casper behaviours
- */
-
-/* globals jQuery, document */
-(function ($, undefined) {
-    "use strict";
-    var $document = $(document);
-    $document.ready(function () {
-        var $postContent = $(".post-content");
-        $postContent.fitVids();
-    });
-})(jQuery);
-
 // action button
 (function() {
   var opened = false;
@@ -50,7 +36,8 @@
       nav.classList.add('show');
       Array.prototype.forEach.call(navItems, function(navItem, i) {
         setTimeout(function() {
-          navItem.classList.add('show');
+          if (opened)
+            navItem.classList.add('show');
         }, 75 * (navItems.length - i));
       });
     }, 23);
@@ -75,25 +62,44 @@
   }
 })();
 
-// dealing with image widths on resize
+// dealing with image and embed widths on resize
 (function() {
-  var imgs = document.querySelectorAll('.post img');
-  var set = false;
   var post = document.querySelector('.post');
+  if (post === null)
+    return;
+  var imgs = document.querySelectorAll('.post img');
+  var embeds = document.querySelectorAll('.post iframe');
+  var set = false;
+  var calcWidth = function(ele) {
+    var margin = (window.innerWidth - post.offsetWidth) / 2;
+    ele.style.width = window.innerWidth.toString() + 'px';
+    ele.style.marginLeft = (-margin).toString() + 'px';
+    if (ele.tagName === 'IFRAME')
+      ele.style.height = (window.innerWidth / 1.776).toString() + 'px';
+  }
+  var resetWidth = function(ele) {
+    ele.style.width = '126%';
+    ele.style.marginLeft = '0px';
+    if (ele.tagName === 'IFRAME')
+      ele.style.height = '372px';
+  }
   var resizeHandler = function(e) {
     if (window.innerWidth <= 662) {
-      var margin = (window.innerWidth - post.offsetWidth) / 2;
-      Array.prototype.forEach.call(imgs, function(img) {
-        img.style.width = window.innerWidth.toString() + 'px';
-        img.style.marginLeft = (-margin).toString() + 'px';
-      });
+      if (imgs.length > 0) {
+        Array.prototype.forEach.call(imgs, calcWidth);
+      }
+      if (embeds.length > 0) {
+        Array.prototype.forEach.call(embeds, calcWidth)
+      }
       if (set === false)
         set = true;
     } else if (set === true && window.innerWidth > 662){
-      Array.prototype.forEach.call(imgs, function(img) {
-        img.style.width = '126%';
-        img.style.marginLeft = '0px';
-      });
+      if (imgs.length > 0) {
+        Array.prototype.forEach.call(imgs, resetWidth);
+      }
+      if (embeds.length > 0) {
+        Array.prototype.forEach.call(embeds, resetWidth);
+      }
       set = false;
     }
   }
