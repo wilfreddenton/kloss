@@ -71,20 +71,35 @@
   var embeds = document.querySelectorAll('.post iframe');
   var set = false;
   var calcWidth = function(ele) {
-    var margin = (window.innerWidth - post.offsetWidth) / 2;
-    ele.style.width = window.innerWidth.toString() + 'px';
+    var windowWidth = window.innerWidth
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(662, windowWidth)) {
+      ele.style.width = 'auto';
+      ele.style.marginLeft = 'auto';
+      ele.classList.add('thin');
+      return;
+    }
+    var margin = (windowWidth - post.offsetWidth) / 2;
+    ele.style.width = windowWidth.toString() + 'px';
     ele.style.marginLeft = (-margin).toString() + 'px';
     if (ele.tagName === 'IFRAME')
-      ele.style.height = (window.innerWidth / 1.776).toString() + 'px';
+      ele.style.height = (windowWidth / 1.776).toString() + 'px';
   }
   var resetWidth = function(ele) {
+    var windowWidth = window.innerWidth
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(662, windowWidth)) {
+      ele.style.width = 'auto';
+      ele.style.marginLeft = 'auto';
+      ele.classList.add('thin');
+      return;
+    }
     ele.style.width = '126%';
     ele.style.marginLeft = '0px';
     if (ele.tagName === 'IFRAME')
       ele.style.height = '372px';
   }
   var resizeHandler = function(e) {
-    if (window.innerWidth <= 662) {
+    var windowWidth = window.innerWidth
+    if (windowWidth <= 662) {
       if (imgs.length > 0) {
         Array.prototype.forEach.call(imgs, calcWidth);
       }
@@ -93,7 +108,7 @@
       }
       if (set === false)
         set = true;
-    } else if (set === true && window.innerWidth > 662){
+    } else if (set === true && windowWidth > 662){
       if (imgs.length > 0) {
         Array.prototype.forEach.call(imgs, resetWidth);
       }

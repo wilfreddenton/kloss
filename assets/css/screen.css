@@ -689,11 +689,24 @@ body.nav-opened .site-wrapper {
 .post img {
   position: relative;
   max-width: 126%;
+  max-height: 600px;
   left: 50%;
   -moz-transform: translateX(-50%);
   -webkit-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
+}
+
+.post img.thin {
+  width: auto;
+  left: 0%;
+  margin: 0 auto;
+  -moz-transform: translateX(0%);
+  -webkit-transform: translateX(0%);
+  -ms-transform: translateX(0%);
+  -o-transform: translateX(0%);
+  transform: translateX(0%);
 }
 
 .post iframe {
@@ -704,6 +717,7 @@ body.nav-opened .site-wrapper {
   -moz-transform: translateX(-50%);
   -webkit-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
@@ -1340,6 +1354,7 @@ body:not(.post-template) .post-title {
 #action-button:hover {
   -moz-transform: translateY(-2px);
   -webkit-transform: translateY(-2px);
+  -o-transform: translateY(-2px);
   -ms-transform: translateY(-2px);
   transform: translateY(-2px);
   box-shadow: 0 2px 6px rgba(0,0,0,0.5);
@@ -1347,6 +1362,7 @@ body:not(.post-template) .post-title {
 #action-button:active {
   -moz-transform: translateY(-2px);
   -webkit-transform: translateY(-2px);
+  -o-transform: translateY(-2px);
   -ms-transform: translateY(-2px);
   transform: translateY(0px);
   box-shadow: 0 1px 1px rgba(0,0,0,0.5);
@@ -1370,6 +1386,7 @@ body:not(.post-template) .post-title {
   transform: scale(0);
   -moz-transform: scale(0);
   -webkit-transform: scale(0);
+  -o-transform: scale(0);
   -ms-transform: scale(0);
   z-index: 99;
   transition: 1.2s ease;
@@ -1378,6 +1395,7 @@ body:not(.post-template) .post-title {
   opacity: 1;
   transform: scale(3);
   -moz-transform: scale(3);
+  -o-transform: scale(3);
   -webkit-transform: scale(3);
   -ms-transform: scale(3);
 }
@@ -1670,6 +1688,7 @@ body:not(.post-template) .post-title {
     -moz-transform: translateX(0%);
     -webkit-transform: translateX(0%);
     -ms-transform: translateX(0%);
+    -o-transform: translateX(0%);
     transform: translateX(0%);
   }
   .post iframe {
@@ -1677,6 +1696,7 @@ body:not(.post-template) .post-title {
     -moz-transform: translateX(0%);
     -webkit-transform: translateX(0%);
     -ms-transform: translateX(0%);
+    -o-transform: translateX(0%);
     transform: translateX(0%);
   }
 }
