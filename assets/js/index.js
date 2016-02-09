@@ -70,9 +70,10 @@
   var imgs = document.querySelectorAll('.post img');
   var embeds = document.querySelectorAll('.post iframe');
   var set = false;
+  var imageWidth = 662;
   var calcWidth = function(ele) {
     var windowWidth = window.innerWidth
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(662, windowWidth)) {
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(imageWidth, windowWidth)) {
       ele.style.width = 'auto';
       ele.style.marginLeft = 'auto';
       ele.classList.add('thin');
@@ -86,7 +87,7 @@
   }
   var resetWidth = function(ele) {
     var windowWidth = window.innerWidth
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(662, windowWidth)) {
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(imageWidth, windowWidth)) {
       ele.style.width = 'auto';
       ele.style.marginLeft = 'auto';
       ele.classList.add('thin');
@@ -95,11 +96,11 @@
     ele.style.width = '126%';
     ele.style.marginLeft = '0px';
     if (ele.tagName === 'IFRAME')
-      ele.style.height = '372px';
+      ele.style.height = (imageWidth / 1.776).toString() + 'px';
   }
   var resizeHandler = function(e) {
     var windowWidth = window.innerWidth
-    if (windowWidth <= 662) {
+    if (windowWidth <= imageWidth) {
       if (imgs.length > 0) {
         Array.prototype.forEach.call(imgs, calcWidth);
       }
@@ -108,7 +109,7 @@
       }
       if (set === false)
         set = true;
-    } else if (set === true && windowWidth > 662){
+    } else if (set === true && windowWidth > imageWidth) {
       if (imgs.length > 0) {
         Array.prototype.forEach.call(imgs, resetWidth);
       }
@@ -120,4 +121,19 @@
   }
   resizeHandler();
   window.addEventListener('resize', resizeHandler);
+})();
+
+// dont show header when not on first page
+(function() {
+  var pathname = window.location.pathname;
+  if (/^\/page\/\d+\/$/.test(pathname)) {
+    var header = document.getElementById('main-header');
+    var jumbo = document.getElementById('jumbo');
+    var split = document.getElementById('split');
+    split.style.display = 'none';
+    header.style.minHeight = '0px';
+    header.style.height = '0px';
+    header.style.padding = '3% 0';
+    jumbo.style.display = 'none';
+  }
 })();
