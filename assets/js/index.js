@@ -1,3 +1,32 @@
+// dont show header when not on first page
+(function() {
+  var pathname = window.location.pathname;
+  if (/^\/page\/\d+\/$/.test(pathname)) {
+    var header = document.getElementById('main-header');
+    var jumbo = document.getElementById('jumbo');
+    var split = document.getElementById('split');
+    split.style.display = 'none';
+    header.style.minHeight = '0px';
+    header.style.height = '0px';
+    header.style.padding = '3% 0';
+    jumbo.style.display = 'none';
+  }
+})();
+
+// adding ellipse to the index excerpts
+(function() {
+  var excerpts = document.getElementsByClassName('post-excerpt');
+  if (excerpts.length > 0) {
+    Array.prototype.forEach.call(excerpts, function(excerpt) {
+      var paras = excerpt.getElementsByTagName('p');
+      console.log(paras);
+      var p = paras[paras.length - 2];
+      if (p.childNodes[0].nodeName === '#text')
+        p.innerHTML += '...';
+    });
+  }
+})();
+
 // action button
 (function() {
   var opened = false;
@@ -32,7 +61,8 @@
       ink.style.height = d;
       ink.style.right = right;
       ink.style.bottom = bottom;
-      ink.classList.add('animate-ripple');
+      if (window.innerWidth <= 1000)
+        ink.classList.add('animate-ripple');
       nav.classList.add('show');
       Array.prototype.forEach.call(navItems, function(navItem, i) {
         setTimeout(function() {
@@ -49,19 +79,6 @@
   ink.addEventListener('click', hideNav);
 })();
 
-// adding ellipse to the index excerpts
-(function() {
-  var excerpts = document.getElementsByClassName('post-excerpt');
-  if (excerpts.length > 0) {
-    Array.prototype.forEach.call(excerpts, function(excerpt) {
-      var paras = excerpt.getElementsByTagName('p');
-      var p = paras[paras.length - 2];
-      if (p.childNodes.length === 1 && p.childNodes[0].nodeName === '#text')
-        p.innerHTML += '...';
-    });
-  }
-})();
-
 // dealing with image and embed widths on resize
 (function() {
   var post = document.querySelector('.post');
@@ -70,10 +87,12 @@
   var imgs = document.querySelectorAll('.post img');
   var embeds = document.querySelectorAll('.post iframe');
   var set = false;
+  var init = true;
   var imageWidth = 662;
+  var columnWidth = 550;
   var calcWidth = function(ele) {
     var windowWidth = window.innerWidth
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(imageWidth, windowWidth)) {
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
       ele.style.width = 'auto';
       ele.style.marginLeft = 'auto';
       ele.classList.add('thin');
@@ -87,7 +106,7 @@
   }
   var resetWidth = function(ele) {
     var windowWidth = window.innerWidth
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(imageWidth, windowWidth)) {
+    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
       ele.style.width = 'auto';
       ele.style.marginLeft = 'auto';
       ele.classList.add('thin');
@@ -109,7 +128,7 @@
       }
       if (set === false)
         set = true;
-    } else if (set === true && windowWidth > imageWidth) {
+    } else if ((set || init) && windowWidth > imageWidth) {
       if (imgs.length > 0) {
         Array.prototype.forEach.call(imgs, resetWidth);
       }
@@ -117,23 +136,10 @@
         Array.prototype.forEach.call(embeds, resetWidth);
       }
       set = false;
+      if (init)
+        init = false;
     }
   }
   resizeHandler();
   window.addEventListener('resize', resizeHandler);
-})();
-
-// dont show header when not on first page
-(function() {
-  var pathname = window.location.pathname;
-  if (/^\/page\/\d+\/$/.test(pathname)) {
-    var header = document.getElementById('main-header');
-    var jumbo = document.getElementById('jumbo');
-    var split = document.getElementById('split');
-    split.style.display = 'none';
-    header.style.minHeight = '0px';
-    header.style.height = '0px';
-    header.style.padding = '3% 0';
-    jumbo.style.display = 'none';
-  }
 })();

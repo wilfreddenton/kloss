@@ -431,7 +431,9 @@ mark {
 
 code, tt {
     font-family: "Inconsolata", monospace, sans-serif;
-    font-size: 0.85em;
+    font-size: 1.8rem;
+    background-color: #efefef;
+    padding: 0 3px;
     white-space: pre-wrap;
     -webkit-font-feature-settings: "liga" 0;
     -moz-font-feature-settings: "liga" 0;
@@ -443,9 +445,10 @@ pre {
     box-sizing: border-box;
     width: 100%;
     font-family: "Inconsolata", monospace, sans-serif;
-    font-size: 0.9em;
+    font-size: 1.5rem;
     white-space: pre;
     line-height: 1.4;
+    margin: 0 0 1.75em;
     overflow: auto;
 }
 
@@ -688,7 +691,8 @@ body.nav-opened .site-wrapper {
 
 .post img {
   position: relative;
-  max-width: 126%;
+  max-width: 662px;
+  width: 150%;
   max-height: 600px;
   left: 50%;
   -moz-transform: translateX(-50%);
@@ -701,7 +705,8 @@ body.nav-opened .site-wrapper {
 .post img.thin {
   width: auto;
   left: 0%;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   -moz-transform: translateX(0%);
   -webkit-transform: translateX(0%);
   -ms-transform: translateX(0%);
@@ -1290,12 +1295,6 @@ body:not(.post-template) .post-title {
 
 .newer-posts {
     left: 0;
-}
-
-.older-posts:hover,
-.newer-posts:hover {
-    color: #889093;
-    border-color: #98a0a4;
 }
 
 .extra-pagination {
