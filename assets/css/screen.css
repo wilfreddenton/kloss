@@ -431,7 +431,7 @@ mark {
 
 code, tt {
     font-family: "Inconsolata", monospace, sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     background-color: #efefef;
     padding: 0 3px;
     white-space: pre-wrap;
@@ -448,7 +448,7 @@ pre {
     font-size: 1.5rem;
     white-space: pre;
     line-height: 1.4;
-    margin: 0 0 1.75em;
+    margin: 0 0 2.1em;
     overflow: auto;
 }
 
@@ -731,6 +731,10 @@ body.nav-opened .site-wrapper {
 
 body:not(.post-template) .post-title {
     font-size: 3.6rem;
+}
+
+.post p {
+  text-align: justify;
 }
 
 .post-title a {

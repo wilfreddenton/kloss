@@ -19,7 +19,6 @@
   if (excerpts.length > 0) {
     Array.prototype.forEach.call(excerpts, function(excerpt) {
       var paras = excerpt.getElementsByTagName('p');
-      console.log(paras);
       var p = paras[paras.length - 2];
       if (p.childNodes[0].nodeName === '#text')
         p.innerHTML += '...';
