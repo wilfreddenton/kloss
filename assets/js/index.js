@@ -33,8 +33,11 @@
   var ink = document.getElementById('ink');
   var nav = document.getElementById('nav');
   var navItems = document.getElementsByClassName('nav-item');
+  var isHover = function(e) {
+    return (e.parentElement.querySelector(':hover') === e);
+  }
   var hideNav = function(e) {
-    if (!opened || $(nav).is(':hover') || $(ab).is(':hover')) return;
+    if (!opened || isHover(nav) || isHover(ab)) return;
     opened = false;
     ink.classList.remove('animate-ripple');
     Array.prototype.forEach.call(navItems, function(navItem, i) {
@@ -90,7 +93,7 @@
   var imageWidth = 662;
   var columnWidth = 550;
   var calcWidth = function(ele) {
-    var windowWidth = window.innerWidth
+    var windowWidth = document.body.offsetWidth;
     if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
       ele.style.width = 'auto';
       ele.style.marginLeft = 'auto';
