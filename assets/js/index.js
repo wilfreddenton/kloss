@@ -1,18 +1,3 @@
-// dont show header when not on first page
-(function() {
-  var pathname = window.location.pathname;
-  if (/^\/page\/\d+\/$/.test(pathname)) {
-    var header = document.getElementById('main-header');
-    var jumbo = document.getElementById('jumbo');
-    var split = document.getElementById('split');
-    split.style.display = 'none';
-    header.style.minHeight = '0px';
-    header.style.height = '0px';
-    header.style.padding = '3% 0';
-    jumbo.style.display = 'none';
-  }
-})();
-
 // adding ellipse to the index excerpts
 (function() {
   var excerpts = document.getElementsByClassName('post-excerpt');

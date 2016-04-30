@@ -622,6 +622,14 @@ body.nav-opened .site-wrapper {
     background-size: cover;
     overflow: hidden;
 }
+#main-header.hide {
+  min-height: 0px;
+  height: 0px;
+  padding: 3% 0;
+}
+#main-header.hide #jumbo {
+  display: none;
+}
 .main-header.on-index {
       padding: 10% 0;
 }
