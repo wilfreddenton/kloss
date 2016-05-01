@@ -82,11 +82,15 @@
     ab: document.getElementById('action-button').childNodes[1],
     ink: document.getElementById('ink'),
     nav: document.getElementById('nav'),
-    navItems: document.getElementsByClassName('nav-item')
+    navItems: document.getElementsByClassName('nav-item'),
+    post: document.querySelector('.post'),
+    imgs: document.querySelectorAll('.post img'),
+    embeds: document.querySelectorAll('.post iframe')
   }
   var ripples = new Ripples(initialState);
   // Reactions
   var isHover = function (e) {
+    console.log(e.parentElement.querySelector(':hover'))
     return (e.parentElement.querySelector(':hover') === e);
   }
   var showNav = function () {
@@ -139,7 +143,7 @@
     ripples.setState({ open: true });
   }
   function close() {
-    if (!ripples.state.open || isHover(refs.nav) || isHover(refs.ab)) return;
+    if (!ripples.state.open) return;
     ripples.setState({ open: false });
   }
   // Main
@@ -157,72 +161,71 @@
   ripples.ripple('open', eles, toggleNav);
   refs.ab.addEventListener('click', open);
   refs.ab.addEventListener('mouseover', open);
-  refs.ab.addEventListener('mouseout', close);
-  refs.nav.addEventListener('mouseout', close);
+  refs.nav.addEventListener('mouseover', open);
+  refs.ink.addEventListener('mouseover', close);
   refs.ink.addEventListener('click', close);
+  // dealing with image and embed widths on resize
+  window.addEventListener('load', function (e) {
+    var post = refs.post;
+    var imgs = refs.imgs;
+    var embeds = refs.embeds;
+    if (post === null)
+      return;
+    var set = false;
+    var init = true;
+    var imageWidth = 662;
+    var columnWidth = 550;
+    var calcWidth = function(ele) {
+      var windowWidth = document.body.offsetWidth;
+      if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
+        ele.style.width = 'auto';
+        ele.style.marginLeft = 'auto';
+        ele.classList.add('thin');
+        return;
+      }
+      var margin = (windowWidth - post.offsetWidth) / 2;
+      ele.style.width = windowWidth.toString() + 'px';
+      ele.style.marginLeft = (-margin).toString() + 'px';
+      if (ele.tagName === 'IFRAME')
+        ele.style.height = (windowWidth / 1.776).toString() + 'px';
+    }
+    var resetWidth = function(ele) {
+      var windowWidth = window.innerWidth
+      if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
+        ele.style.width = 'auto';
+        ele.style.marginLeft = 'auto';
+        ele.classList.add('thin');
+        return;
+      }
+      ele.style.width = '126%';
+      ele.style.marginLeft = '0px';
+      if (ele.tagName === 'IFRAME')
+        ele.style.height = (imageWidth / 1.776).toString() + 'px';
+    }
+    var resizeHandler = function(e) {
+      var windowWidth = window.innerWidth
+      if (windowWidth <= imageWidth) {
+        if (imgs.length > 0) {
+          Array.prototype.forEach.call(imgs, calcWidth);
+        }
+        if (embeds.length > 0) {
+          Array.prototype.forEach.call(embeds, calcWidth)
+        }
+        if (set === false)
+          set = true;
+      } else if ((set || init) && windowWidth > imageWidth) {
+        if (imgs.length > 0) {
+          Array.prototype.forEach.call(imgs, resetWidth);
+        }
+        if (embeds.length > 0) {
+          Array.prototype.forEach.call(embeds, resetWidth);
+        }
+        set = false;
+        if (init)
+          init = false;
+      }
+    }
+    resizeHandler();
+    window.addEventListener('resize', resizeHandler);
+  });
 })(window);
-
-// dealing with image and embed widths on resize
-document.addEventListener('DOMContentLoaded', function (e) {
-  var post = document.querySelector('.post');
-  if (post === null)
-    return;
-  var imgs = document.querySelectorAll('.post img');
-  var embeds = document.querySelectorAll('.post iframe');
-  var set = false;
-  var init = true;
-  var imageWidth = 662;
-  var columnWidth = 550;
-  var calcWidth = function(ele) {
-    var windowWidth = document.body.offsetWidth;
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
-      ele.style.width = 'auto';
-      ele.style.marginLeft = 'auto';
-      ele.classList.add('thin');
-      return;
-    }
-    var margin = (windowWidth - post.offsetWidth) / 2;
-    ele.style.width = windowWidth.toString() + 'px';
-    ele.style.marginLeft = (-margin).toString() + 'px';
-    if (ele.tagName === 'IFRAME')
-      ele.style.height = (windowWidth / 1.776).toString() + 'px';
-  }
-  var resetWidth = function(ele) {
-    var windowWidth = window.innerWidth
-    if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
-      ele.style.width = 'auto';
-      ele.style.marginLeft = 'auto';
-      ele.classList.add('thin');
-      return;
-    }
-    ele.style.width = '126%';
-    ele.style.marginLeft = '0px';
-    if (ele.tagName === 'IFRAME')
-      ele.style.height = (imageWidth / 1.776).toString() + 'px';
-  }
-  var resizeHandler = function(e) {
-    var windowWidth = window.innerWidth
-    if (windowWidth <= imageWidth) {
-      if (imgs.length > 0) {
-        Array.prototype.forEach.call(imgs, calcWidth);
-      }
-      if (embeds.length > 0) {
-        Array.prototype.forEach.call(embeds, calcWidth)
-      }
-      if (set === false)
-        set = true;
-    } else if ((set || init) && windowWidth > imageWidth) {
-      if (imgs.length > 0) {
-        Array.prototype.forEach.call(imgs, resetWidth);
-      }
-      if (embeds.length > 0) {
-        Array.prototype.forEach.call(embeds, resetWidth);
-      }
-      set = false;
-      if (init)
-        init = false;
-    }
-  }
-  resizeHandler();
-  window.addEventListener('resize', resizeHandler);
-});
