@@ -438,11 +438,14 @@ code, tt {
     font-family: "Inconsolata", monospace, sans-serif;
     font-size: 1.7rem;
     background-color: #efefef;
-    white-space: inherit !important;
     padding: 0 3px;
     -webkit-font-feature-settings: "liga" 0;
     -moz-font-feature-settings: "liga" 0;
     font-feature-settings: "liga" 0;
+}
+
+pre code, tt {
+    white-space: pre !important;
 }
 
 code ol {
@@ -452,6 +455,7 @@ code ol {
 
 code li {
   margin: 0;
+  overflow-wrap: normal;
   background: white !important;
 }
 
@@ -462,7 +466,7 @@ pre {
     font-size: 1.5rem;
     line-height: 1.4;
     margin: 0 0 2.1em;
-    overflowX: scroll;
+    overflow-x: scroll;
     /* max-width: 126%; */
     /* width: 126%; */
     /* padding: 15px 20px; */
