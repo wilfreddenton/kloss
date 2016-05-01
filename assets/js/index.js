@@ -93,9 +93,7 @@
     refs.nav.classList.add('show');
   }
   var showNavItem = function (item) {
-    setTimeout(function () {
-      item.classList.add('show');
-    }, 75 * (refs.navItems.length - Array.prototype.indexOf.call(refs.navItems, item)));
+    item.classList.add('show');
   }
   var showInk = function () {
     var d = Math.max(window.innerWidth, window.innerHeight);
@@ -108,19 +106,17 @@
       refs.ink.style.height = d;
       refs.ink.style.right = right;
       refs.ink.style.bottom = bottom;
-      if (window.innerWidth <= 1000)
-        refs.ink.classList.add('animate-ripple');
+      refs.ink.classList.add('animate-ripple');
     });
   }
   var hideNav = function () {
     setTimeout(function () {
-      refs.nav.classList.remove('show');
+      if (!ripples.state.open)
+        refs.nav.classList.remove('show');
     }, 500);
   }
   var hideNavItem = function (item) {
-    setTimeout(function () {
-      item.classList.remove('show');
-    }, 75 * Array.prototype.indexOf.call(refs.navItems, item));
+    item.classList.remove('show');
   }
   var hideInk = function () {
     refs.ink.classList.remove('animate-ripple');
@@ -139,18 +135,12 @@
   }
   // Handlers
   function open() {
-    if (ripples.state.open || ripples.state.busy) return;
-    ripples.setState({ open: true, busy: true });
-    setTimeout(function () {
-      ripples.setState({ busy: false });
-    }, 600);
+    if (ripples.state.open) return;
+    ripples.setState({ open: true });
   }
   function close() {
-    if (!ripples.state.open || ripples.state.busy || isHover(refs.nav) || isHover(refs.ab)) return;
-    ripples.setState({ open: false, busy: true });
-    setTimeout(function () {
-      ripples.setState({ busy: false });
-    }, 600);
+    if (!ripples.state.open || isHover(refs.nav) || isHover(refs.ab)) return;
+    ripples.setState({ open: false });
   }
   // Main
   // adding ellipse to the index excerpts
@@ -171,61 +161,6 @@
   refs.nav.addEventListener('mouseout', close);
   refs.ink.addEventListener('click', close);
 })(window);
-
-// action button
-// (function() {
-//   var opened = false;
-//   var ab = document.getElementById('action-button').childNodes[1];
-//   var ink = document.getElementById('ink');
-//   var nav = document.getElementById('nav');
-//   var navItems = document.getElementsByClassName('nav-item');
-//   var isHover = function(e) {
-//     return (e.parentElement.querySelector(':hover') === e);
-//   }
-//   var hideNav = function(e) {
-//     if (!opened || isHover(nav) || isHover(ab)) return;
-//     opened = false;
-//     ink.classList.remove('animate-ripple');
-//     Array.prototype.forEach.call(navItems, function(navItem, i) {
-//       setTimeout(function() {
-//         navItem.classList.remove('show');
-//       }, 75 * i)
-//     });
-//     setTimeout(function() {
-//       if (!opened)
-//         nav.classList.remove('show');
-//     }, 500);
-//   }
-//   var showNav = function(e) {
-//     if (opened) return;
-//     opened = true;
-//     var d = Math.max(window.innerWidth, window.innerHeight);
-//     var right = (-(d / 2) + ab.offsetWidth / 2 + 25).toString() + 'px';
-//     var bottom = (-(d / 2) + ab.offsetHeight / 2 + 15).toString() + 'px';
-//     ink.classList.remove('animate-ripple');
-//     setTimeout(function() {
-//       d = d.toString() + 'px';
-//       ink.style.width = d;
-//       ink.style.height = d;
-//       ink.style.right = right;
-//       ink.style.bottom = bottom;
-//       if (window.innerWidth <= 1000)
-//         ink.classList.add('animate-ripple');
-//       nav.classList.add('show');
-//       Array.prototype.forEach.call(navItems, function(navItem, i) {
-//         setTimeout(function() {
-//           if (opened)
-//             navItem.classList.add('show');
-//         }, 75 * (navItems.length - i));
-//       });
-//     }, 23);
-//   }
-//   ab.addEventListener('click', showNav);
-//   ab.addEventListener('mouseover', showNav);
-//   ab.addEventListener('mouseout', hideNav);
-//   nav.addEventListener('mouseout', hideNav);
-//   ink.addEventListener('click', hideNav);
-// })();
 
 // dealing with image and embed widths on resize
 document.addEventListener('DOMContentLoaded', function (e) {
