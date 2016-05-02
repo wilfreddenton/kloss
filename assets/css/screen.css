@@ -743,6 +743,7 @@ body.nav-opened .site-wrapper {
 
 .post iframe {
   position: relative;
+  max-width: 126%;
   width: 126%;
   height: 372px;
   left: 50%;
@@ -1790,25 +1791,6 @@ body:not(.post-template) .post-title {
         border-left: none;
     }
 
-}
-
-@media only screen and (max-width: 662px) {
-  .post img {
-    left: 0px;
-    -moz-transform: translateX(0%);
-    -webkit-transform: translateX(0%);
-    -ms-transform: translateX(0%);
-    -o-transform: translateX(0%);
-    transform: translateX(0%);
-  }
-  .post iframe {
-    left: 0px;
-    -moz-transform: translateX(0%);
-    -webkit-transform: translateX(0%);
-    -ms-transform: translateX(0%);
-    -o-transform: translateX(0%);
-    transform: translateX(0%);
-  }
 }
 
 /* ==========================================================================

@@ -14,7 +14,7 @@
 4 verbose stack     at /Users/wilfred/n/lib/node_modules/npm/node_modules/read-package-json/read-json.js:300:12
 4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (evalmachine.<anonymous>:380:3)
 5 verbose cwd /Users/wilfred/Sites/ghost-0.7.6/content/themes/kloss
-6 error Darwin 15.3.0
+6 error Darwin 15.4.0
 7 error argv "/Users/wilfred/n/bin/node" "/Users/wilfred/n/bin/npm" "start"
 8 error node v4.2.3
 9 error npm  v2.14.7

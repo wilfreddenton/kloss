@@ -76,8 +76,6 @@
   var initialState = {
     open: false,
     busy: false,
-    columnWidth: 550,
-    imageWidth: 662,
     set: false,
     init: true
   }
@@ -176,8 +174,16 @@
       tightenImg(img);
     }
   }
+  var resizeEmbed = function (embed) {
+    var parentWidth = embed.parentNode.offsetWidth;
+    var windowWidth = window.innerWidth;
+    var toWidth = Math.min(windowWidth, parentWidth * 1.26);
+    embed.style.width = toWidth.toString() + 'px';
+    embed.style.height = (toWidth / 1.777).toString() + 'px';
+  }
   var resizeHandler = function (e) {
     Array.prototype.forEach.call(refs.imgs, resizeImg);
+    Array.prototype.forEach.call(refs.embeds, resizeEmbed);
   }
   // adding ellipse to the index excerpts
   if (refs.excerpts.length > 0) {
@@ -209,5 +215,6 @@
       });
     }
   });
+  Array.prototype.forEach.call(refs.embeds, resizeEmbed);
   window.addEventListener('resize', resizeHandler);
 })(window);
