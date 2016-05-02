@@ -75,7 +75,11 @@
   // Initialization
   var initialState = {
     open: false,
-    busy: false
+    busy: false,
+    columnWidth: 550,
+    imageWidth: 662,
+    set: false,
+    init: true
   }
   var refs = {
     excerpts: document.getElementsByClassName('post-excerpt'),
@@ -90,8 +94,8 @@
   var ripples = new Ripples(initialState);
   // Reactions
   var isHover = function (e) {
-    console.log(e.parentElement.querySelector(':hover'))
-    return (e.parentElement.querySelector(':hover') === e);
+    console.log(e.parentNode.querySelector(':hover'))
+    return (e.parentNode.querySelector(':hover') === e);
   }
   var showNav = function () {
     refs.nav.classList.add('show');
@@ -138,15 +142,39 @@
     }
   }
   // Handlers
-  function open() {
+  var open = function () {
     if (ripples.state.open) return;
     ripples.setState({ open: true });
   }
-  function close() {
+  var close = function () {
     if (!ripples.state.open) return;
     ripples.setState({ open: false });
   }
-  // Main
+  var overflowImg = function (img, toWidth) {
+    img.classList.add('overflow-gutter');
+    img.style.width = toWidth.toString() + 'px';
+  }
+  var tightenImg = function (img) {
+    img.classList.remove('overflow-gutter');
+    img.style.width = 'auto';
+  }
+  var resizeImg = function (img) {
+    var parentWidth = img.parentNode.offsetWidth;
+    var windowWidth = window.innerWidth;
+    var toWidth = Math.min(windowWidth, parentWidth * 1.26);
+    var imgHeight = img.classList.contains('overflow-gutter') ? Math.floor(img.height / 1.26) : img.height;
+    if (((!img.classList.contains('overflow-gutter') && img.width === img.parentNode.offsetWidth)
+         || (img.classList.contains('overflow-gutter') && img.width > img.parentNode.offsetWidth))
+        && img.naturalWidth >= toWidth
+        && imgHeight * 1.26 <= 600) {
+      overflowImg(img, toWidth);
+    } else {
+      tightenImg(img);
+    }
+  }
+  var resizeHandler = function (e) {
+    Array.prototype.forEach.call(refs.imgs, resizeImg);
+  }
   // adding ellipse to the index excerpts
   if (refs.excerpts.length > 0) {
     Array.prototype.forEach.call(refs.excerpts, function(excerpt) {
@@ -165,67 +193,17 @@
   refs.ink.addEventListener('mouseover', close);
   refs.ink.addEventListener('click', close);
   // dealing with image and embed widths on resize
-  window.addEventListener('load', function (e) {
-    var post = refs.post;
-    var imgs = refs.imgs;
-    var embeds = refs.embeds;
-    if (post === null)
-      return;
-    var set = false;
-    var init = true;
-    var imageWidth = 662;
-    var columnWidth = 550;
-    var calcWidth = function(ele) {
-      var windowWidth = document.body.offsetWidth;
-      if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
-        ele.style.width = 'auto';
-        ele.style.marginLeft = 'auto';
-        ele.classList.add('thin');
-        return;
-      }
-      var margin = (windowWidth - post.offsetWidth) / 2;
-      ele.style.width = windowWidth.toString() + 'px';
-      ele.style.marginLeft = (-margin).toString() + 'px';
-      if (ele.tagName === 'IFRAME')
-        ele.style.height = (windowWidth / 1.776).toString() + 'px';
+  var prepImg = function (img) {
+    resizeImg(img);
+  }
+  Array.prototype.forEach.call(refs.imgs, function (img) {
+    if (img.complete) { // images will be loaded from cache
+      resizeImg(img);
+    } else {
+      img.addEventListener('load', function (e) {
+        resizeImg(this);
+      });
     }
-    var resetWidth = function(ele) {
-      var windowWidth = window.innerWidth
-      if (ele.tagName === 'IMG' && ele.naturalWidth < Math.min(columnWidth, windowWidth - 32)) {
-        ele.style.width = 'auto';
-        ele.style.marginLeft = 'auto';
-        ele.classList.add('thin');
-        return;
-      }
-      ele.style.width = '126%';
-      ele.style.marginLeft = '0px';
-      if (ele.tagName === 'IFRAME')
-        ele.style.height = (imageWidth / 1.776).toString() + 'px';
-    }
-    var resizeHandler = function(e) {
-      var windowWidth = window.innerWidth
-      if (windowWidth <= imageWidth) {
-        if (imgs.length > 0) {
-          Array.prototype.forEach.call(imgs, calcWidth);
-        }
-        if (embeds.length > 0) {
-          Array.prototype.forEach.call(embeds, calcWidth)
-        }
-        if (set === false)
-          set = true;
-      } else if ((set || init) && windowWidth > imageWidth) {
-        if (imgs.length > 0) {
-          Array.prototype.forEach.call(imgs, resetWidth);
-        }
-        if (embeds.length > 0) {
-          Array.prototype.forEach.call(embeds, resetWidth);
-        }
-        set = false;
-        if (init)
-          init = false;
-      }
-    }
-    resizeHandler();
-    window.addEventListener('resize', resizeHandler);
   });
+  window.addEventListener('resize', resizeHandler);
 })(window);
