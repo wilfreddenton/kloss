@@ -766,17 +766,17 @@ body:not(.post-template) .post-title {
 
 .post-title a {
   transition: 0.2s ease;
-    color: #363653;
-    text-decoration: none;
+  color: #363653;
+  text-decoration: none;
 }
 .post-title a:hover {
   color: #A9A0D2;
 }
 
 .post-excerpt p {
-    margin: 0;
-    font-size: 0.9em;
-    line-height: 1.7em;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  line-height: 1.7em;
 }
 
 .post-excerpt img {
@@ -789,9 +789,9 @@ body:not(.post-template) .post-title {
 
 .read-more {
   float: right;
-  top: 12px;
+  top: -3px;
   position: relative;
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .post-meta {

@@ -158,15 +158,19 @@
     img.classList.remove('overflow-gutter');
     img.style.width = 'auto';
   }
+  var correctRatio = function (img) {
+    return Math.abs(Math.round(img.naturalWidth * 100 / img.naturalHeight) - Math.round(img.width * 100 / img.height)) <= 1;
+  }
   var resizeImg = function (img) {
     var parentWidth = img.parentNode.offsetWidth;
     var windowWidth = window.innerWidth;
     var toWidth = Math.min(windowWidth, parentWidth * 1.26);
     var imgHeight = img.classList.contains('overflow-gutter') ? Math.floor(img.height / 1.26) : img.height;
-    if (((!img.classList.contains('overflow-gutter') && img.width === img.parentNode.offsetWidth)
-         || (img.classList.contains('overflow-gutter') && img.width > img.parentNode.offsetWidth))
+    if (((!img.classList.contains('overflow-gutter') && img.width === parentWidth)
+         || (img.classList.contains('overflow-gutter') && img.width >= parentWidth))
         && img.naturalWidth >= toWidth
-        && imgHeight * 1.26 <= 600) {
+        && imgHeight * 1.26 <= 600
+        && correctRatio(img)) {
       overflowImg(img, toWidth);
     } else {
       tightenImg(img);
@@ -179,7 +183,7 @@
   if (refs.excerpts.length > 0) {
     Array.prototype.forEach.call(refs.excerpts, function(excerpt) {
       var paras = excerpt.getElementsByTagName('p');
-      var p = paras[paras.length - 2];
+      var p = paras[paras.length - 1];
       if (p.childNodes[0].nodeName === '#text')
         p.innerHTML += '...';
     });
