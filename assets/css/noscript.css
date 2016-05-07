@@ -1,0 +1,17 @@
+.nav {
+  bottom: 54px;
+  z-index: 100;
+}
+.nav ul li {
+  position: relative;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+.nav ul li a .nav-circle {
+  margin-left: 15px;
+  transform: scale(1);
+  -ms-transform: scale(1);
+  -moz-transform: scale(1);
+  -webkit-transform: scale(1);
+  -o-transform: scale(0.33);
+}
