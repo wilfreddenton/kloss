@@ -87,7 +87,8 @@
     navItems: document.getElementsByClassName('nav-item'),
     post: document.querySelector('.post'),
     imgs: document.querySelectorAll('.post img'),
-    embeds: document.querySelectorAll('.post iframe')
+    embeds: document.querySelectorAll('.post iframe'),
+    imgViewerBackground: document.querySelector('.img-viewer-background')
   }
   var ripples = new Ripples(initialState);
   // Reactions
@@ -148,6 +149,86 @@
     if (!ripples.state.open) return;
     ripples.setState({ open: false });
   }
+  var showBackground = function () {
+    refs.imgViewerBackground.style.display = 'block';
+    setTimeout(function() {
+      refs.imgViewerBackground.classList.add('img-viewer-active');
+    })
+  }
+  var hideBackground = function () {
+    refs.imgViewerBackground.classList.remove('img-viewer-active');
+    setTimeout(function () {
+      refs.imgViewerBackground.style.display = 'none';
+    }, 300);
+  }
+  var implodeImg = function (img) {
+    img.style.width = img.dataset.width.toString() + 'px';
+    img.style.height = img.dataset.height.toString() + 'px';
+    img.dataset.width = null;
+    img.dataset.height = null;
+    setTimeout(function () {
+      resizeImg(img);
+      img.style.height = 'auto';
+    }, 350)
+  }
+  var explodeImg = function (img) {
+    img.dataset.width = img.offsetWidth;
+    img.dataset.height = img.offsetHeight;
+    img.style.height = img.offsetHeight.toString() + 'px';
+    img.style.width = img.offsetWidth.toString() + 'px';
+    setTimeout(function () {
+      var width = img.naturalWidth;
+      var height = img.naturalHeight;
+      if (img.naturalHeight > window.innerHeight || img.naturalWidth > window.innerWidth) {
+        var ratio = img.naturalWidth / img.naturalHeight;
+        width = window.innerWidth;
+        height = window.innerWidth / ratio;
+        if (window.innerHeight < height) {
+          width = ratio * window.innerHeight;
+          height = window.innerHeight;
+        }
+      }
+      img.style.height = height.toString() + 'px';
+      img.style.width = width.toString() + 'px';
+    });
+  }
+  var imgViewerOpen = function (img) {
+    var spacer = img.previousSibling;
+    spacer.style.height = img.offsetHeight.toString() + 'px';
+    showBackground();
+    explodeImg(img);
+    img.classList.add('img-viewer-active');
+  }
+  var imgViewerClose = function (img) {
+    var spacer = img.previousSibling;
+    hideBackground();
+    implodeImg(img);
+    setTimeout(function () {
+      spacer.style.height = '0px';
+      img.classList.remove('img-viewer-active');
+    }, 300);
+  }
+  var imgViewerClickHandler = function (e) {
+    if (this.classList.contains('img-viewer-active'))
+      imgViewerClose(this);
+    else
+      imgViewerOpen(this);
+  }
+  var enableImgViewer = function (img) {
+    img.classList.add('img-viewer');
+    img.addEventListener('click', imgViewerClickHandler);
+    var spacer = document.createElement('div');
+    spacer.classList.add('img-viewer-placeholder');
+    var parent = img.parentNode;
+    parent.insertBefore(spacer, img);
+  }
+  var disableImgViewer = function (img) {
+    img.classList.remove('img-viewer');
+    img.removeEventListener('click', imgViewerClickHandler);
+  }
+  var correctRatio = function (img) {
+    return Math.abs(Math.round(img.naturalWidth * 100 / img.naturalHeight) - Math.round(img.width * 100 / img.height)) <= 1;
+  }
   var overflowImg = function (img, toWidth) {
     img.classList.add('overflow-gutter');
     img.style.width = toWidth.toString() + 'px';
@@ -156,16 +237,13 @@
     img.classList.remove('overflow-gutter');
     img.style.width = 'auto';
   }
-  var correctRatio = function (img) {
-    return Math.abs(Math.round(img.naturalWidth * 100 / img.naturalHeight) - Math.round(img.width * 100 / img.height)) <= 1;
-  }
-  var resizeImg = function (img) {
+  function resizeImg(img) {
     var parentWidth = img.parentNode.offsetWidth;
     var windowWidth = window.innerWidth;
     var toWidth = Math.min(windowWidth, parentWidth * 1.26);
     var imgHeight = img.classList.contains('overflow-gutter') ? Math.floor(img.height / 1.26) : img.height;
-    if (((!img.classList.contains('overflow-gutter') && img.width === parentWidth)
-         || (img.classList.contains('overflow-gutter') && img.width >= parentWidth))
+    if (((!img.classList.contains('overflow-gutter') && img.offsetWidth === parentWidth)
+         || (img.classList.contains('overflow-gutter') && img.offsetWidth >= parentWidth))
         && img.naturalWidth >= toWidth
         && imgHeight * 1.26 <= 600
         && correctRatio(img)) {
@@ -173,6 +251,15 @@
     } else {
       tightenImg(img);
     }
+    setTimeout(function () {
+      if (img.naturalHeight > img.height || img.naturalWidth > img.width) {
+        if (!img.classList.contains('img-viewer'))
+          enableImgViewer(img);
+      } else {
+        if (img.classList.contains('img-viewer'))
+          disableImgViewer(img);
+      }
+    });
   }
   var resizeEmbed = function (embed) {
     var parentWidth = embed.parentNode.offsetWidth;
