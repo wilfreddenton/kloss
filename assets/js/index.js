@@ -159,14 +159,16 @@
     refs.imgViewerBackground.classList.remove('img-viewer-active');
     setTimeout(function () {
       refs.imgViewerBackground.style.display = 'none';
-    }, 300);
+    }, 350);
   }
   var implodeImg = function (img) {
     img.style.width = img.dataset.width.toString() + 'px';
     img.style.height = img.dataset.height.toString() + 'px';
-    img.dataset.width = null;
-    img.dataset.height = null;
+    img.style.top = (img.dataset.top + (img.dataset.scrollY - window.scrollY)).toString() + 'px';
+    img.style.left = img.dataset.left.toString() + 'px';
     setTimeout(function () {
+      img.style.removeProperty('left');
+      img.style.removeProperty('top');
       resizeImg(img);
       img.style.height = 'auto';
     }, 350)
@@ -174,8 +176,13 @@
   var explodeImg = function (img) {
     img.dataset.width = img.offsetWidth;
     img.dataset.height = img.offsetHeight;
+    img.dataset.left = ((window.innerWidth - img.offsetWidth) / 2);
+    img.dataset.top = img.getBoundingClientRect().top;
+    img.dataset.scrollY = window.scrollY;
     img.style.height = img.offsetHeight.toString() + 'px';
     img.style.width = img.offsetWidth.toString() + 'px';
+    img.style.left = ((window.innerWidth - img.offsetWidth) / 2).toString() + 'px';
+    img.style.top = img.getBoundingClientRect().top.toString() + 'px';
     setTimeout(function () {
       var width = img.naturalWidth;
       var height = img.naturalHeight;
@@ -190,23 +197,25 @@
       }
       img.style.height = height.toString() + 'px';
       img.style.width = width.toString() + 'px';
+      img.style.left = ((window.innerWidth - width) / 2).toString() + 'px';
+      img.style.top = ((window.innerHeight - height) / 2).toString() + 'px';
     });
   }
   var imgViewerOpen = function (img) {
-    var spacer = img.previousSibling;
-    spacer.style.height = img.offsetHeight.toString() + 'px';
     showBackground();
     explodeImg(img);
+    var spacer = img.previousSibling;
+    spacer.style.height = img.offsetHeight.toString() + 'px';
     img.classList.add('img-viewer-active');
   }
   var imgViewerClose = function (img) {
-    var spacer = img.previousSibling;
     hideBackground();
     implodeImg(img);
     setTimeout(function () {
+      var spacer = img.previousSibling;
       spacer.style.height = '0px';
       img.classList.remove('img-viewer-active');
-    }, 300);
+    }, 350);
   }
   var imgViewerClickHandler = function (e) {
     if (this.classList.contains('img-viewer-active'))
@@ -272,6 +281,22 @@
     Array.prototype.forEach.call(refs.imgs, resizeImg);
     Array.prototype.forEach.call(refs.embeds, resizeEmbed);
   }
+  var test = true
+  var scrollHandler = function (e) {
+    var activeImgViewers = document.querySelectorAll('img.img-viewer-active')
+    Array.prototype.forEach.call(activeImgViewers, function (img) {
+      if (test) {
+        imgViewerClose(img);
+        test = false;
+        setTimeout(function () {
+          test = true;
+        })
+      } else {
+        console.log(window.scrollY);
+        img.style.top = (img.dataset.top + (img.dataset.scrollY - window.scrollY)).toString() + 'px';
+      }
+    });
+  }
   // adding ellipse to the index excerpts
   if (refs.excerpts.length > 0) {
     Array.prototype.forEach.call(refs.excerpts, function(excerpt) {
@@ -304,4 +329,5 @@
   });
   Array.prototype.forEach.call(refs.embeds, resizeEmbed);
   window.addEventListener('resize', resizeHandler);
+  window.addEventListener('scroll', scrollHandler);
 })(window);
