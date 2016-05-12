@@ -715,12 +715,12 @@ body.nav-opened .site-wrapper {
 
 /* Every post, on every page, gets this style on its <article> tag */
 .post {
-    position: relative;
-    width: 80%;
-    max-width: 525px;
-    margin: 4rem auto;
-    padding-bottom: 4rem;
-    word-wrap: break-word;
+  position: relative;
+  width: 80%;
+  max-width: 525px;
+  margin: 4rem auto;
+  padding-bottom: 4rem;
+  word-wrap: break-word;
 }
 
 .post img {
@@ -741,37 +741,51 @@ body.nav-opened .site-wrapper {
   transform: translateX(-50%);
 }
 
-.site-wrapper .img-viewer-background {
+body > .img-viewer-content {
+  display: none;
+  position: absolute;
+}
+body > .img-viewer-content.img-viewer-active {
+  display: block;
+  z-index: 9001;
+  cursor: zoom-out;
+  transition: width 300ms, height 300ms, top 300ms, left 300ms;
+}
+
+body > .img-viewer-background {
   position: fixed;
   top: 0px;
   left: 0px;
   height: 100%;
   width: 100%;
-  background-color: white;
   opacity: 0;
+  background-color: white;
   display: none;
   z-index: 9000;
   transition: opacity 300ms, background 300ms;
 }
-.site-wrapper .img-viewer-background.img-viewer-active {
+body > .img-viewer-background.img-viewer-active {
+  cursor: zoom-out;
   opacity: 1;
 }
 .post img.img-viewer {
   cursor: zoom-in;
+  opacity: 1;
 }
 .post img.img-viewer.img-viewer-active {
-  cursor: zoom-out;
-  position: fixed;
-  padding: 0;
-  z-index: 9001;
-  max-width: none;
-  max-height: none;
-  -moz-transform: none;
-  -webkit-transform: none;
-  -ms-transform: none;
-  -o-transform: none;
-  transform: none;
-  transition: width 300ms, height 300ms, top 300ms, left 300ms;
+  opacity: 0;
+  /* cursor: zoom-out;
+  /* position: fixed; */
+  /* padding: 0; */
+  /* z-index: 9001; */
+  /* max-width: none; */
+  /* max-height: none; */
+  /* -moz-transform: none; */
+  /* -webkit-transform: none; */
+  /* -ms-transform: none; */
+  /* -o-transform: none; */
+  /* transform: none; */
+  /* transition: width 300ms, height 300ms, top 300ms, left 300ms; */
 }
 
 .post iframe {

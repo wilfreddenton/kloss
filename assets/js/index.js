@@ -88,7 +88,8 @@
     post: document.querySelector('.post'),
     imgs: document.querySelectorAll('.post img'),
     embeds: document.querySelectorAll('.post iframe'),
-    imgViewerBackground: document.querySelector('.img-viewer-background')
+    imgViewerBackground: document.querySelector('.img-viewer-background'),
+    imgViewerContent: document.querySelector('.img-viewer-content')
   }
   var ripples = new Ripples(initialState);
   // Reactions
@@ -164,76 +165,77 @@
   var implodeImg = function (img) {
     img.style.width = img.dataset.width.toString() + 'px';
     img.style.height = img.dataset.height.toString() + 'px';
-    img.style.top = (img.dataset.top + (img.dataset.scrollY - window.scrollY)).toString() + 'px';
+    img.style.top = img.dataset.top.toString() + 'px';
     img.style.left = img.dataset.left.toString() + 'px';
-    setTimeout(function () {
-      img.style.removeProperty('left');
-      img.style.removeProperty('top');
-      resizeImg(img);
-      img.style.height = 'auto';
-    }, 350)
+    return img
   }
   var explodeImg = function (img) {
-    img.dataset.width = img.offsetWidth;
-    img.dataset.height = img.offsetHeight;
-    img.dataset.left = ((window.innerWidth - img.offsetWidth) / 2);
-    img.dataset.top = img.getBoundingClientRect().top;
-    img.dataset.scrollY = window.scrollY;
-    img.style.height = img.offsetHeight.toString() + 'px';
-    img.style.width = img.offsetWidth.toString() + 'px';
-    img.style.left = ((window.innerWidth - img.offsetWidth) / 2).toString() + 'px';
-    img.style.top = img.getBoundingClientRect().top.toString() + 'px';
-    setTimeout(function () {
-      var width = img.naturalWidth;
-      var height = img.naturalHeight;
-      if (img.naturalHeight > window.innerHeight || img.naturalWidth > window.innerWidth) {
-        var ratio = img.naturalWidth / img.naturalHeight;
-        width = window.innerWidth;
-        height = window.innerWidth / ratio;
-        if (window.innerHeight < height) {
-          width = ratio * window.innerHeight;
-          height = window.innerHeight;
-        }
+    var width = img.naturalWidth;
+    var height = img.naturalHeight;
+    if (img.naturalHeight > window.innerHeight || img.naturalWidth > window.innerWidth) {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      width = window.innerWidth;
+      height = window.innerWidth / ratio;
+      if (window.innerHeight < height) {
+        width = ratio * window.innerHeight;
+        height = window.innerHeight;
       }
-      img.style.height = height.toString() + 'px';
-      img.style.width = width.toString() + 'px';
-      img.style.left = ((window.innerWidth - width) / 2).toString() + 'px';
-      img.style.top = ((window.innerHeight - height) / 2).toString() + 'px';
-    });
+    }
+    img.style.height = height.toString() + 'px';
+    img.style.width = width.toString() + 'px';
+    img.style.left = ((window.innerWidth - width) / 2).toString() + 'px';
+    img.style.top = (window.scrollY + (window.innerHeight - height) / 2).toString() + 'px';
+  }
+  var copyImgToImgViewerContent = function (img) {
+    var viewer = refs.imgViewerContent;
+    var width = img.offsetWidth;
+    var height = img.offsetHeight;
+    var left = ((window.innerWidth - img.offsetWidth) / 2);
+    var top = img.getBoundingClientRect().top + window.scrollY;
+    viewer.src = img.src;
+    viewer.dataset.width = width;
+    viewer.dataset.height = height;
+    viewer.dataset.left = left;
+    viewer.dataset.top = top;
+    viewer.style.height = height.toString() + 'px';
+    viewer.style.width = width.toString() + 'px';
+    viewer.style.left = left.toString() + 'px';
+    viewer.style.top = top.toString() + 'px';
+    viewer.classList.add('img-viewer-active');
+    img.classList.add('img-viewer-active');
+    return viewer;
   }
   var imgViewerOpen = function (img) {
     showBackground();
-    explodeImg(img);
-    var spacer = img.previousSibling;
-    spacer.style.height = img.offsetHeight.toString() + 'px';
-    img.classList.add('img-viewer-active');
+    var viewer = copyImgToImgViewerContent(img);
+    setTimeout(function () {
+      explodeImg(viewer);
+    });
   }
   var imgViewerClose = function (img) {
     hideBackground();
-    implodeImg(img);
+    var viewer = implodeImg(refs.imgViewerContent);
     setTimeout(function () {
-      var spacer = img.previousSibling;
-      spacer.style.height = '0px';
       img.classList.remove('img-viewer-active');
-    }, 350);
+      viewer.classList.remove('img-viewer-active');
+    }, 310);
   }
-  var imgViewerClickHandler = function (e) {
-    if (this.classList.contains('img-viewer-active'))
-      imgViewerClose(this);
-    else
-      imgViewerOpen(this);
+  var imgViewerOpenHandler = function (e) {
+    imgViewerOpen(this);
   }
   var enableImgViewer = function (img) {
     img.classList.add('img-viewer');
-    img.addEventListener('click', imgViewerClickHandler);
-    var spacer = document.createElement('div');
-    spacer.classList.add('img-viewer-placeholder');
-    var parent = img.parentNode;
-    parent.insertBefore(spacer, img);
+    img.addEventListener('click', imgViewerOpenHandler);
   }
   var disableImgViewer = function (img) {
     img.classList.remove('img-viewer');
-    img.removeEventListener('click', imgViewerClickHandler);
+    img.removeEventListener('click', imgViewerOpenHandler);
+  }
+  var imgViewerCloseHandler = function (e) {
+    if (this.classList.contains('img-viewer-active')) {
+      var img = document.querySelector('.post img.img-viewer-active');
+      imgViewerClose(img);
+    }
   }
   var correctRatio = function (img) {
     return Math.abs(Math.round(img.naturalWidth * 100 / img.naturalHeight) - Math.round(img.width * 100 / img.height)) <= 1;
@@ -283,19 +285,9 @@
   }
   var test = true
   var scrollHandler = function (e) {
-    var activeImgViewers = document.querySelectorAll('img.img-viewer-active')
-    Array.prototype.forEach.call(activeImgViewers, function (img) {
-      if (test) {
-        imgViewerClose(img);
-        test = false;
-        setTimeout(function () {
-          test = true;
-        })
-      } else {
-        console.log(window.scrollY);
-        img.style.top = (img.dataset.top + (img.dataset.scrollY - window.scrollY)).toString() + 'px';
-      }
-    });
+    var img = document.querySelector('.post img.img-viewer-active')
+    if (img)
+      imgViewerClose(img);
   }
   // adding ellipse to the index excerpts
   if (refs.excerpts.length > 0) {
@@ -314,6 +306,8 @@
   refs.nav.addEventListener('mouseover', open);
   refs.ink.addEventListener('mouseover', close);
   refs.ink.addEventListener('click', close);
+  refs.imgViewerContent.addEventListener('click', imgViewerCloseHandler);
+  refs.imgViewerBackground.addEventListener('click', imgViewerCloseHandler);
   // dealing with image and embed widths on resize
   var prepImg = function (img) {
     resizeImg(img);
