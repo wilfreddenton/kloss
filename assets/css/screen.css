@@ -743,13 +743,22 @@ body.nav-opened .site-wrapper {
 
 body > .img-viewer-content {
   display: none;
+  z-index: 9001;
   position: absolute;
+  will-change: transform;
 }
 body > .img-viewer-content.img-viewer-active {
   display: block;
-  z-index: 9001;
   cursor: zoom-out;
-  transition: width 300ms, height 300ms, top 300ms, left 300ms;
+  transition: transform 300ms;
+  /* -moz-transition: width 300ms, height 300ms, top 300ms, left 300ms; */
+  /* -webkit-transition: width 300ms, height 300ms, top 300ms, left 300ms; */
+  /* -o-transition: width 300ms, height 300ms, top 300ms, left 300ms; */
+  /* -ms-transition: width 300ms, height 300ms, top 300ms, left 300ms; */
+  /* transition: width 300ms, height 300ms, top 300ms, left 300ms; */
+}
+body > .img-viewer-content.img-viewer-active.no-transform {
+  transition: transform 0ms;
 }
 
 body > .img-viewer-background {
@@ -774,18 +783,6 @@ body > .img-viewer-background.img-viewer-active {
 }
 .post img.img-viewer.img-viewer-active {
   opacity: 0;
-  /* cursor: zoom-out;
-  /* position: fixed; */
-  /* padding: 0; */
-  /* z-index: 9001; */
-  /* max-width: none; */
-  /* max-height: none; */
-  /* -moz-transform: none; */
-  /* -webkit-transform: none; */
-  /* -ms-transform: none; */
-  /* -o-transform: none; */
-  /* transform: none; */
-  /* transition: width 300ms, height 300ms, top 300ms, left 300ms; */
 }
 
 .post iframe {
