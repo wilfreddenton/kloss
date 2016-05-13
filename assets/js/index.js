@@ -109,8 +109,9 @@
   }
   var showInk = function () {
     var d = Math.max(window.innerWidth, window.innerHeight);
-    var right = (-(d / 2) + refs.ab.offsetWidth / 2 + 25).toString() + 'px';
-    var bottom = (-(d / 2) + refs.ab.offsetHeight / 2 + 15).toString() + 'px';
+    var buttonDim = 56;
+    var right = (-(d / 2) + buttonDim / 2 + 25).toString() + 'px';
+    var bottom = (-(d / 2) + buttonDim / 2 + 15).toString() + 'px';
     refs.ink.classList.remove('animate-ripple');
     setTimeout(function() {
       d = d.toString() + 'px';
