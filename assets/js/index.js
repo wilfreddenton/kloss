@@ -238,8 +238,6 @@
   }
   var imgViewerOpen = function (img) {
     showBackground();
-    // copyImgToImgViewerContent(img);
-    // explodeImg(refs.imgViewerContent);
     requestAnimationFrame(function () {
       explodeImg(img)
     });
