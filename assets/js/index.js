@@ -246,7 +246,9 @@
   }
   var imgViewerClose = function (img) {
     hideBackground();
-    implodeImg(refs.imgViewerContent);
+    requestAnimationFrame(function () {
+      implodeImg(refs.imgViewerContent);
+    });
     setTimeout(function () {
       img.classList.remove('img-viewer-active');
       refs.imgViewerContent.classList.remove('img-viewer-active');
