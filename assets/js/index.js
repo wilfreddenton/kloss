@@ -78,7 +78,10 @@
     busy: false,
     set: false,
     init: true,
-    imgViewerClosing: false
+    imgViewerClosing: false,
+    innerWidth: 0,
+    innerHeight: 0,
+    scrollY: 0
   }
   var refs = {
     excerpts: document.getElementsByClassName('post-excerpt'),
@@ -152,92 +155,94 @@
     ripples.setState({ open: false });
   }
   var showBackground = function () {
-    refs.imgViewerBackground.style.display = 'block';
-    var hack = refs.imgViewerBackground.offsetWidth;
+    refs.imgViewerBackground.classList.remove('img-viewer-hidden');
     refs.imgViewerBackground.classList.add('img-viewer-active');
   }
   var hideBackground = function () {
     refs.imgViewerBackground.classList.remove('img-viewer-active');
     setTimeout(function () {
-      refs.imgViewerBackground.style.display = 'none';
-    }, 350);
+      refs.imgViewerBackground.classList.add('img-viewer-hidden');
+    }, 300);
   }
-  var implodeTimeout = null;
   var implodeImg = function (img) {
-    var scale = parseFloat(img.dataset.width) / img.offsetWidth;
+    img.classList.remove('no-transform');
+    var scale = parseFloat(img.dataset.width) / parseFloat(img.style.width);
     var imgCenter = parseFloat(img.dataset.top) + parseFloat(img.dataset.height) / 2;
-    var windowCenter = window.scrollY + window.innerHeight / 2;
+    var windowCenter = ripples.state.scrollY + window.innerHeight / 2;
     var scaleTop = (imgCenter - windowCenter) / scale;
     img.style.transform = 'scale(' + scale + ') translateY(' + scaleTop.toString() + 'px)';
     setTimeout(function () {
       img.classList.add('no-transform');
-      var hack = img.offsetWidth;
       img.style.transform = '';
       img.style.width = img.dataset.width.toString() + 'px';
       img.style.height = img.dataset.height.toString() + 'px';
       img.style.top = img.dataset.top.toString() + 'px';
       img.style.left = img.dataset.left.toString() + 'px';
-      var hack = img.offsetWidth;
-      img.classList.remove('no-transform');
     }, 300);
   }
   var explodeImg = function (img) {
-    document.body.style.overflow = 'hidden';
-    var width = img.naturalWidth;
-    var height = img.naturalHeight;
-    if (img.naturalHeight > window.innerHeight || img.naturalWidth > window.innerWidth) {
-      var ratio = img.naturalWidth / img.naturalHeight;
-      width = window.innerWidth;
-      height = window.innerWidth / ratio;
-      if (window.innerHeight < height) {
-        width = ratio * window.innerHeight;
-        height = window.innerHeight;
-      }
-    }
-    var left = (window.innerWidth - width) / 2;
-    var top = window.scrollY + (window.innerHeight - height) / 2;
-    var scale = width / img.offsetWidth;
-    var imgCenter = img.offsetTop + img.offsetHeight / 2;
-    var windowCenter = window.scrollY + window.innerHeight / 2;
-    var scaleTop = (windowCenter - imgCenter) / scale;
-    img.style.transform = 'scale(' + scale + ') translateY(' + scaleTop.toString() + 'px)';
-    setTimeout(function () {
-      img.classList.add('no-transform');
-      var hack = img.offsetWidth;
-      img.style.transform = '';
-      img.style.height = height.toString() + 'px';
-      img.style.width = width.toString() + 'px';
-      img.style.left = left.toString() + 'px';
-      img.style.top = top.toString() + 'px';
-      var hack = img.offsetWidth;
-      img.classList.remove('no-transform');
-      document.body.style.overflow = 'auto';
-    }, 300);
-  }
-  var copyImgToImgViewerContent = function (img) {
     var viewer = refs.imgViewerContent;
-    var width = img.offsetWidth;
-    var height = img.offsetHeight;
-    var left = ((window.innerWidth - img.offsetWidth) / 2);
-    var top = img.getBoundingClientRect().top + window.scrollY;
+    var imgOffsetWidth = parseFloat(img.dataset.offsetWidth);
+    var imgOffsetHeight = parseFloat(img.dataset.offsetHeight);
+    var imgDistTop = parseFloat(img.dataset.distTop);
+    var imgNaturalWidth = img.naturalWidth;
+    var imgNaturalHeight = img.naturalHeight;
+    var windowInnerWidth = ripples.state.innerWidth;
+    var windowInnerHeight = ripples.state.innerHeight;
+    var windowScrollY = ripples.state.scrollY;
+    var left = ((windowInnerWidth - imgOffsetWidth) / 2);
+    var top = imgDistTop + windowScrollY;
     viewer.src = img.src;
-    viewer.dataset.width = width;
-    viewer.dataset.height = height;
+    viewer.dataset.width = imgOffsetWidth;
+    viewer.dataset.height = imgOffsetHeight;
     viewer.dataset.left = left;
     viewer.dataset.top = top;
-    viewer.style.height = height.toString() + 'px';
-    viewer.style.width = width.toString() + 'px';
+    viewer.style.height = imgOffsetHeight.toString() + 'px';
+    viewer.style.width = imgOffsetWidth.toString() + 'px';
     viewer.style.left = left.toString() + 'px';
     viewer.style.top = top.toString() + 'px';
-    return viewer;
+    // split
+    viewer.classList.add('img-viewer-active');
+    img.classList.add('img-viewer-active');
+    requestAnimationFrame(function () {
+      document.body.style.overflow = 'hidden';
+      var width = imgNaturalWidth;
+      var height = imgNaturalHeight;
+      if (imgNaturalHeight > windowInnerHeight || imgNaturalWidth > windowInnerWidth) {
+        var ratio = imgNaturalWidth / imgNaturalHeight;
+        width = windowInnerWidth;
+        height = windowInnerWidth / ratio;
+        if (windowInnerHeight < height) {
+          width = ratio * windowInnerHeight;
+          height = windowInnerHeight;
+        }
+      }
+      left = (windowInnerWidth - width) / 2;
+      top = windowScrollY + (windowInnerHeight - height) / 2;
+      var scale = width / imgOffsetWidth;
+      var imgCenter = (windowScrollY + imgDistTop) + imgOffsetHeight / 2;
+      var windowCenter = windowScrollY + windowInnerHeight / 2;
+      var scaleTop = (windowCenter - imgCenter) / scale;
+      viewer.classList.remove('no-transform');
+      viewer.style.transform = 'scale(' + scale + ') translateY(' + scaleTop.toString() + 'px)';
+      setTimeout(function () {
+        viewer.classList.add('no-transform');
+        viewer.style.transform = '';
+        viewer.style.height = height.toString() + 'px';
+        viewer.style.width = width.toString() + 'px';
+        viewer.style.left = left.toString() + 'px';
+        viewer.style.top = top.toString() + 'px';
+        document.body.style.overflow = 'auto';
+      }, 300);
+    });
   }
   var imgViewerOpen = function (img) {
     showBackground();
-    var viewer = copyImgToImgViewerContent(img);
-    viewer.classList.add('img-viewer-active');
-    img.classList.add('img-viewer-active');
-    var hack = img.offsetWidth; // force repaint
-    explodeImg(viewer);
+    // copyImgToImgViewerContent(img);
+    // explodeImg(refs.imgViewerContent);
+    requestAnimationFrame(function () {
+      explodeImg(img)
+    });
   }
   var imgViewerClose = function (img) {
     hideBackground();
@@ -289,15 +294,16 @@
     } else {
       tightenImg(img);
     }
-    setTimeout(function () {
-      if (img.naturalHeight > img.height || img.naturalWidth > img.width) {
-        if (!img.classList.contains('img-viewer'))
-          enableImgViewer(img);
-      } else {
-        if (img.classList.contains('img-viewer'))
-          disableImgViewer(img);
-      }
-    });
+    img.dataset.offsetWidth = img.offsetWidth;
+    img.dataset.offsetHeight = img.offsetHeight;
+    img.dataset.distTop = img.getBoundingClientRect().top;
+    if (img.naturalHeight > img.height || img.naturalWidth > img.width) {
+      if (!img.classList.contains('img-viewer'))
+        enableImgViewer(img);
+    } else {
+      if (img.classList.contains('img-viewer'))
+        disableImgViewer(img);
+    }
   }
   var resizeEmbed = function (embed) {
     var parentWidth = embed.parentNode.offsetWidth;
@@ -306,10 +312,49 @@
     embed.style.width = toWidth.toString() + 'px';
     embed.style.height = (toWidth / 1.777).toString() + 'px';
   }
+  var setWindowDims = function () {
+    ripples.setState({
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight
+    });
+  }
   var resizeHandler = function (e) {
     Array.prototype.forEach.call(refs.imgs, resizeImg);
     Array.prototype.forEach.call(refs.embeds, resizeEmbed);
+    requestAnimationFrame(setWindowDims);
   }
+  function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    }
+  }
+  var updateImgDists = function () {
+    var imgs = document.querySelectorAll('.post img.img-viewer');
+    var frame = function (img) {
+      img.dataset.distTop = img.getBoundingClientRect().top;
+    }
+    Array.prototype.forEach.call(imgs, function(img) {
+      requestAnimationFrame(function () {
+        frame(img);
+      });
+    });
+  }
+  var updateScrollY = function () {
+    requestAnimationFrame(function () {
+      ripples.setState({ scrollY: window.scrollY });
+    });
+  }
+  var debouncedUpdateScrollY = debounce(updateScrollY, 50);
+  var debouncedUpdateImgDists = debounce(updateImgDists, 50);
   var scrollHandler = function (e) {
     var img = document.querySelector('.post img.img-viewer-active')
     if (img && !ripples.state.imgViewerClosing) {
@@ -319,6 +364,8 @@
         ripples.setState({ imgViewerClosing: false });
       }, 310);
     }
+    debouncedUpdateImgDists();
+    debouncedUpdateScrollY();
   }
   // adding ellipse to the index excerpts
   if (refs.excerpts.length > 0) {
@@ -353,6 +400,7 @@
     }
   });
   Array.prototype.forEach.call(refs.embeds, resizeEmbed);
+  requestAnimationFrame(setWindowDims);
   window.addEventListener('resize', resizeHandler);
   window.addEventListener('scroll', scrollHandler);
 })(window);

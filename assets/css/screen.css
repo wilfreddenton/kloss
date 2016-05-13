@@ -765,17 +765,22 @@ body > .img-viewer-background {
   position: fixed;
   top: 0px;
   left: 0px;
+  opacity: 0;
   height: 100%;
   width: 100%;
-  opacity: 0;
   background-color: white;
-  display: none;
   z-index: 9000;
-  transition: opacity 300ms, background 300ms;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: opacity 300ms;
+}
+body > .img-viewer-background.img-viewer-hidden {
+  height: 0px;
+  width: 0px;
 }
 body > .img-viewer-background.img-viewer-active {
   cursor: zoom-out;
-  opacity: 1;
+  opacity: 1.0;
 }
 .post img.img-viewer {
   cursor: zoom-in;
