@@ -81,7 +81,8 @@
     imgViewerClosing: false,
     innerWidth: 0,
     innerHeight: 0,
-    scrollY: 0
+    scrollY: 0,
+    animating: false
   }
   var refs = {
     excerpts: document.getElementsByClassName('post-excerpt'),
@@ -98,7 +99,6 @@
   var ripples = new Ripples(initialState);
   // Reactions
   var isHover = function (e) {
-    console.log(e.parentNode.querySelector(':hover'))
     return (e.parentNode.querySelector(':hover') === e);
   }
   var showNav = function () {
@@ -206,7 +206,6 @@
     viewer.classList.add('img-viewer-active');
     img.classList.add('img-viewer-active');
     requestAnimationFrame(function () {
-      document.body.style.overflow = 'hidden';
       var width = imgNaturalWidth;
       var height = imgNaturalHeight;
       if (imgNaturalHeight > windowInnerHeight || imgNaturalWidth > windowInnerWidth) {
@@ -233,17 +232,21 @@
         viewer.style.width = width.toString() + 'px';
         viewer.style.left = left.toString() + 'px';
         viewer.style.top = top.toString() + 'px';
-        document.body.style.overflow = 'auto';
       }, 300);
     });
   }
   var imgViewerOpen = function (img) {
+    ripples.setState({ animating: true });
     showBackground();
     requestAnimationFrame(function () {
       explodeImg(img)
     });
+    setTimeout(function () {
+      ripples.setState({ animating: false });
+    }, 350);
   }
   var imgViewerClose = function (img) {
+    ripples.setState({ animating: true });
     hideBackground();
     requestAnimationFrame(function () {
       implodeImg(refs.imgViewerContent);
@@ -252,6 +255,9 @@
       img.classList.remove('img-viewer-active');
       refs.imgViewerContent.classList.remove('img-viewer-active');
     }, 300);
+    setTimeout(function () {
+      ripples.setState({ animating: false });
+    }, 350);
   }
   var imgViewerOpenHandler = function (e) {
     imgViewerOpen(this);
@@ -265,7 +271,7 @@
     img.removeEventListener('click', imgViewerOpenHandler);
   }
   var imgViewerCloseHandler = function (e) {
-    if (this.classList.contains('img-viewer-active')) {
+    if (this.classList.contains('img-viewer-active') && !ripples.state.animating) {
       var img = document.querySelector('.post img.img-viewer-active');
       imgViewerClose(img);
     }
@@ -281,7 +287,7 @@
     img.classList.remove('overflow-gutter');
     img.style.width = 'auto';
   }
-  function resizeImg(img) {
+  var resizeImg = function (img) {
     var parentWidth = img.parentNode.offsetWidth;
     var windowWidth = window.innerWidth;
     var toWidth = Math.min(windowWidth, parentWidth * 1.26);
@@ -377,9 +383,46 @@
         p.innerHTML += '...';
     });
   }
+  var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+  var preventDefault = function (e) {
+    e = e || window.event;
+    if (e.preventDefault)
+      e.preventDefault();
+    e.returnValue = false;
+  }
+  var preventDefaultForScrollKeys = function (e) {
+    if (keys[e.keyCode]) {
+      preventDefault(e);
+      return false;
+    }
+  }
+  var disableScroll = function (e) {
+    if (window.addEventListener) // older
+      window.addEventListener('DOMMouseScroll', preventDefault, false);
+    window.onwheel = preventDefault; // modern standard
+    window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
+    window.ontouchmove  = preventDefault; // mobile
+    document.onkeydown  = preventDefaultForScrollKeys;
+  }
+  var enableScroll = function (e) {
+    if (window.removeEventListener)
+      window.removeEventListener('DOMMouseScroll', preventDefault, false);
+    window.onmousewheel = document.onmousewheel = null;
+    window.onwheel = null;
+    window.ontouchmove = null;
+    document.onkeydown = null;
+  }
+  var toggleScroll = function (e) {
+    if (ripples.state.animating && !ripples.state.imgViewerClosing) {
+      disableScroll();
+    } else if (!ripples.state.animating && !ripples.state.imgViewerClosing) {
+      enableScroll();
+    }
+  }
   var eles = [refs.nav, refs.ink];
   Array.prototype.push.apply(eles, refs.navItems);
   ripples.ripple('open', eles, toggleNav);
+  ripples.ripple('animating', document.body, toggleScroll);
   refs.ab.addEventListener('click', open);
   refs.ab.addEventListener('mouseover', open);
   refs.nav.addEventListener('mouseover', open);
